@@ -12,8 +12,10 @@ import junit.framework.TestCase;
 import java.util.Date;
 import java.util.List;
 
-public class JamaProjectTest extends TestCase {
+import org.junit.Test;
 
+public class JamaProjectTest extends TestCase {
+    @Test
     public void testProject() throws RestClientException {
 
         JamaConfig jamaConfig = new JamaConfig();

@@ -51,15 +51,15 @@ public abstract class JamaFieldValue {
         return getValue().toString();
     }
 
-    protected void checkType(Class clazz, Object value) throws JamaTypeMismatchException {
+    protected void checkType(Class<?> clazz, Object value) throws JamaTypeMismatchException {
         if(!clazz.isInstance(value)){
             throw new JamaTypeMismatchException("Expected type " + clazz.getName() + ", received " + value.getClass() + " instead. " +
                     "In field: " + getName());
         }
     }
 
-    protected void checkTypes(Class[] classes, Object value) throws JamaTypeMismatchException {
-        for(Class clazz : classes) {
+    protected void checkTypes(Class<?>[] classes, Object value) throws JamaTypeMismatchException {
+        for(Class<?> clazz : classes) {
             if(clazz.isInstance(value)) {
                 return;
             }
@@ -79,7 +79,7 @@ public abstract class JamaFieldValue {
         return field.isReadOnly();
     }
 
-    protected void setValueFromPoolOrNew(Class clazz, int resourceId) throws RestClientException {
+    protected void setValueFromPoolOrNew(Class<?> clazz, int resourceId) throws RestClientException {
         JamaDomainObject jamaDomainObject = getJamaInstance().checkPool(clazz, resourceId);
         try {
             if(jamaDomainObject == null) {

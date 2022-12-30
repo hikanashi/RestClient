@@ -3,8 +3,6 @@ package com.jamasoftware.services.restclient.jamadomain.core;
 import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.jamadomain.lazyresources.LazyBase;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 
 public abstract class LazyResource extends LazyBase implements JamaDomainObject {
     public void forceFetch() throws RestClientException {
@@ -29,11 +27,11 @@ public abstract class LazyResource extends LazyBase implements JamaDomainObject 
         jamaInstance.delete(this);
     }
 
-    protected LazyResource post(Class clazz, JamaInstance jamaInstance) throws RestClientException {
+    protected LazyResource post(Class<?> clazz, JamaInstance jamaInstance) throws RestClientException {
         return jamaInstance.post(this, clazz);
     }
 
-    protected LazyResource post(Class clazz) throws RestClientException {
+    protected LazyResource post(Class<?> clazz) throws RestClientException {
         return jamaInstance.post(this, clazz);
     }
 

@@ -31,7 +31,7 @@ public class MultiSelectFieldValue extends JamaFieldValue {
     }
 
     public void setValue(Object value) throws JamaTypeMismatchException {
-        Class[] allowedTypes = {
+        Class<?>[] allowedTypes = {
                 List.class,
                 PickListOption.class
         };
@@ -40,7 +40,7 @@ public class MultiSelectFieldValue extends JamaFieldValue {
             this.value.add((PickListOption)value);
             return;
         }
-        List<?> list = (List)value;
+        List<?> list = (List<?>)value;
         List<PickListOption> options = new ArrayList<>();
         for(Object o : list) {
             checkType(PickListOption.class, o);

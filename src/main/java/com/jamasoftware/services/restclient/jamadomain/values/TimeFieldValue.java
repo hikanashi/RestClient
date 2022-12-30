@@ -2,7 +2,6 @@ package com.jamasoftware.services.restclient.jamadomain.values;
 
 import com.jamasoftware.services.restclient.exception.JamaTypeMismatchException;
 import com.jamasoftware.services.restclient.exception.RestClientException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class TimeFieldValue extends JamaFieldValue {
     private String value;

@@ -28,7 +28,7 @@ class SimpleJsonUtil {
         }
     }
 
-    private boolean testType(Object object, Class clazz) throws JsonException {
+    private boolean testType(Object object, Class<?> clazz) throws JsonException {
         return object == null || clazz.isInstance(object);
     }
 
@@ -43,7 +43,7 @@ class SimpleJsonUtil {
         return object;
     }
 
-    private Object require(JSONObject jsonObject, String key, Class clazz) throws JsonException {
+    private Object require(JSONObject jsonObject, String key, Class<?> clazz) throws JsonException {
         Object object = require(jsonObject, key);
         if (testType(object, clazz)) {
             return object;
@@ -78,7 +78,7 @@ class SimpleJsonUtil {
         return jsonObject.get(key);
     }
 
-    private Object request(JSONObject jsonObject, String key, Class clazz) throws JsonException {
+    private Object request(JSONObject jsonObject, String key, Class<?> clazz) throws JsonException {
         Object object = request(jsonObject, key);
         if (testType(object, clazz)) {
             return object;

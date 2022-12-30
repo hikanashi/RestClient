@@ -9,7 +9,6 @@ import com.jamasoftware.services.restclient.httpconnection.HttpClient;
 import com.jamasoftware.services.restclient.jamadomain.core.LazyResource;
 import com.jamasoftware.services.restclient.json.JsonHandler;
 
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class JamaClient {
     private String username;
     private String password;
     private String baseUrl;
-    private String linkUrl;
+    // private String linkUrl;
     private String apiKey = null;
 
     public JamaClient(HttpClient httpClient, JsonHandler json, String baseUrl, String username, String password) {
@@ -36,7 +35,7 @@ public class JamaClient {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
-        this.linkUrl = linkUrl;
+        // this.linkUrl = linkUrl;
         this.apiKey = apiKey;
     }
 

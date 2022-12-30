@@ -2,12 +2,9 @@ package com.jamasoftware.services.restclient;
 
 import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.jamadomain.core.JamaInstance;
-import com.jamasoftware.services.restclient.jamadomain.fields.*;
 import com.jamasoftware.services.restclient.jamadomain.lazyresources.*;
-import com.jamasoftware.services.restclient.jamadomain.values.JamaFieldValue;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 public class Main {
     public static void printAll(JamaParent jamaParent, int indent) throws RestClientException {
@@ -27,7 +24,7 @@ public class Main {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     public static void main(String[] ignore) throws UnsupportedEncodingException, RestClientException {
 
 
@@ -60,9 +57,9 @@ public class Main {
 
 
             JamaRelationship relationship = jamaInstance.getRelationship(294902);
-            JamaItem fromItem = relationship.getFromItem();
-            JamaItem toItem = relationship.getToItem();
-            JamaRelationshipType relationshipType = relationship.getRelationshipType();
+            // JamaItem fromItem = relationship.getFromItem();
+            // JamaItem toItem = relationship.getToItem();
+            // JamaRelationshipType relationshipType = relationship.getRelationshipType();
             System.out.println("relationsghip:" + relationship.toString() );
 
 

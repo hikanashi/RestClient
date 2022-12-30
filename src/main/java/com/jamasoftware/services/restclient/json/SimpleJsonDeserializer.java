@@ -14,7 +14,6 @@ import com.jamasoftware.services.restclient.jamadomain.values.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -219,7 +218,7 @@ public class SimpleJsonDeserializer {
         return jamaProject;
     }
 
-    private JamaDomainObject checkPool(Class clazz, String id, JamaInstance jamaInstance) throws RestClientException {
+    protected JamaDomainObject checkPool(Class<?> clazz, String id, JamaInstance jamaInstance) throws RestClientException {
         try {
             return checkPool(clazz, Integer.valueOf(id), jamaInstance);
         } catch(NumberFormatException e) {
@@ -227,7 +226,7 @@ public class SimpleJsonDeserializer {
         }
     }
 
-    private JamaDomainObject checkPool(Class clazz, int id, JamaInstance jamaInstance) throws RestClientException {
+    private JamaDomainObject checkPool(Class<?> clazz, int id, JamaInstance jamaInstance) throws RestClientException {
         JamaDomainObject jamaDomainObject = jamaInstance.checkPool(clazz, id);
         if(jamaDomainObject != null) {
             return jamaDomainObject;
@@ -443,7 +442,7 @@ public class SimpleJsonDeserializer {
         JSONObject pageInfo = util.requestObject(meta, "pageInfo");
         if(pageInfo == null) {
             // todo handle beta case
-            throw new NotImplementedException();
+            throw new RuntimeException();
         }
         int startIndex = util.requireInt(pageInfo, "startIndex");
         int resultCount = util.requireInt(pageInfo, "resultCount");
@@ -464,7 +463,7 @@ public class SimpleJsonDeserializer {
         return page;
     }
 
-    private void forceValue(Object object, Class clazz, String fieldName, Object value) throws JsonException {
+    private void forceValue(Object object, Class<?> clazz, String fieldName, Object value) throws JsonException {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);

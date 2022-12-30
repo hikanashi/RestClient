@@ -4,7 +4,6 @@ import com.jamasoftware.services.restclient.JamaParent;
 import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.jamadomain.lazyresources.JamaItem;
 import com.jamasoftware.services.restclient.jamadomain.lazyresources.JamaItemType;
-import com.jamasoftware.services.restclient.jamadomain.lazyresources.JamaProject;
 import com.jamasoftware.services.restclient.jamadomain.lazyresources.JamaRelationship;
 import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingFactory;
 import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingItem;

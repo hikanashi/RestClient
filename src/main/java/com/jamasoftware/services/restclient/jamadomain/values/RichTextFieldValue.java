@@ -3,7 +3,6 @@ package com.jamasoftware.services.restclient.jamadomain.values;
 import com.jamasoftware.services.restclient.exception.JamaTypeMismatchException;
 import com.jamasoftware.services.restclient.jamadomain.JamaRichText;
 import com.jamasoftware.services.restclient.exception.RestClientException;
-import com.jamasoftware.services.restclient.jamadomain.lazyresources.JamaProject;
 
 public class RichTextFieldValue extends JamaFieldValue {
     private JamaRichText value = new JamaRichText();

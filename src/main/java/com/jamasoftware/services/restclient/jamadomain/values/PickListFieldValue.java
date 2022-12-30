@@ -26,7 +26,7 @@ public class PickListFieldValue extends JamaFieldValue {
     }
 
     public void setValue(Object value) throws RestClientException {
-        Class[] allowedTypes = {
+        Class<?>[] allowedTypes = {
                 PickListOption.class,
                 String.class
         };
