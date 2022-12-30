@@ -24,7 +24,7 @@ public abstract class LazyBase {
         }
     }
 
-    public void checkType(Class clazz, JamaDomainObject jamaDomainObject) {
+    public void checkType(Class<?> clazz, JamaDomainObject jamaDomainObject) {
         if(this == jamaDomainObject) return;
         if(!clazz.isInstance(jamaDomainObject)) {
             throw new UnexpectedJamaResponseException("Expecting a " + clazz.getName() + " from the Jama server. Instead, got: " + jamaDomainObject.getClass().getName());

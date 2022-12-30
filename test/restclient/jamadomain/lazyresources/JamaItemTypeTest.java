@@ -12,8 +12,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 public class JamaItemTypeTest extends TestCase {
 
+    @Test
     public void testItemType() throws RestClientException {
         JamaConfig jamaConfig = new JamaConfig();
         jamaConfig.setBaseUrl("test");

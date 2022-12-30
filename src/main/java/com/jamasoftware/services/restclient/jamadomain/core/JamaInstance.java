@@ -7,7 +7,6 @@ import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.jamaclient.JamaClient;
 import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingItem;
 import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingRelationship;
-import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingResource;
 import com.jamasoftware.services.restclient.util.CompareUtil;
 
 import java.lang.ref.WeakReference;
@@ -44,11 +43,11 @@ public class JamaInstance implements JamaDomainObject {
         return wr == null ? null : wr.get();
     }
 
-    public JamaDomainObject checkPool(Class clazz, int id) {
+    public JamaDomainObject checkPool(Class<?> clazz, int id) {
         return getPoolOrNull(clazz.getName() + id);
     }
 
-    public void addToPool(Class clazz, int id, JamaDomainObject jamaDomainObject) {
+    public void addToPool(Class<?> clazz, int id, JamaDomainObject jamaDomainObject) {
         resourcePool.put(clazz.getName() + id, new WeakReference<>(jamaDomainObject));
     }
 
@@ -222,7 +221,7 @@ public class JamaInstance implements JamaDomainObject {
         jamaClient.delete(lazyResource.getDeleteUrl());
     }
 
-    protected LazyResource post(LazyResource lazyResource, Class clazz) throws RestClientException {
+    protected LazyResource post(LazyResource lazyResource, Class<?> clazz) throws RestClientException {
         Integer resourceId = jamaClient.post(lazyResource.getCreateUrl(), lazyResource);
         if(resourceId == null) {
             return null;

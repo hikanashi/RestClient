@@ -32,11 +32,10 @@ import java.util.logging.Logger;
 
 public class ApacheHttpClient implements HttpClient {
     private final Logger log = Logger.getLogger(ApacheHttpClient.class.getName());
-
+    PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     private org.apache.http.client.HttpClient client;
 
     public ApacheHttpClient() throws RestClientException {
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setDefaultMaxPerRoute(10);
         try
         {
@@ -68,6 +67,15 @@ public class ApacheHttpClient implements HttpClient {
         catch (Exception e)
         {
             throw new RestClientException(e);
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable{
+        try{
+            connectionManager.close();
+        } finally {
+            super.finalize();
         }
     }
 

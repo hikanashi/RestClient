@@ -106,7 +106,7 @@ public class SimpleJsonSerializer implements JsonSerializer {
             MultiSelectFieldValue multiSelect = (MultiSelectFieldValue)value;
             JSONArray options = new JSONArray();
             for(PickListOption option : multiSelect.getValue()) {
-                options.add(option.getId());
+                util.addIfNotNull(options, option.getId());
             }
             return options;
         }
@@ -123,7 +123,7 @@ public class SimpleJsonSerializer implements JsonSerializer {
             TestCaseStepsFieldValue steps = (TestCaseStepsFieldValue)value;
             JSONArray stepArray = new JSONArray();
             for(TestCaseStep step : steps.getValue()) {
-                stepArray.add(serializeStep(step));
+                util.addIfNotNull(stepArray, serializeStep(step));
             }
             return stepArray;
         }

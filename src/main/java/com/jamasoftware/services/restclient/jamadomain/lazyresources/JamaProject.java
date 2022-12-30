@@ -4,7 +4,6 @@ import com.jamasoftware.services.restclient.JamaParent;
 import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.jamadomain.core.JamaDomainObject;
 import com.jamasoftware.services.restclient.jamadomain.core.LazyResource;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +31,7 @@ public class JamaProject extends LazyResource implements JamaParent {
 
 //    @Override
 //    public void addChild(JamaItem jamaItem) {
-//        throw new NotImplementedException();
+//        throw new RuntimeException();
 //
 //    }
 
