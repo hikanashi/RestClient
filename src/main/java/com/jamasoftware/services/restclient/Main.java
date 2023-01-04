@@ -27,11 +27,37 @@ public class Main {
     // @SuppressWarnings("unchecked")
     public static void main(String[] ignore) throws UnsupportedEncodingException, RestClientException {
 
-
-
         try {
+            int itemid = 0;
+            String propfilepath = null;
+            for(String arg : ignore) {
+                if (arg.startsWith("-item:")) {
+                    String[] param = arg.split(":");
+                    if( param.length > 1) {
+                        itemid = Integer.parseInt(param[1]);
+                    } 
+                }
+                if (arg.startsWith("-property:")) {
+                    String[] param = arg.split(":");
+                    if( param.length > 1) {
+                        propfilepath = param[1];
+                    } 
+                }
+            }
+
+
+            if(itemid == 0) {
+                System.out.println("option -item:itemid is must");
+                return;
+            }
+
+            if(propfilepath == null) {
+                System.out.println("option -property:filepath is must");
+                return;
+            }
+
             // TODO fail good (John) attempted to retireve item types for invalid item
-            JamaInstance jamaInstance = new JamaInstance(new JamaConfig(true));
+            JamaInstance jamaInstance = new JamaInstance(new JamaConfig(true, propfilepath));
 
 
             // API Header for JamaConfig object
@@ -44,7 +70,8 @@ public class Main {
 //            JamaInstance jamaInstance = new JamaInstance(jamaConfig);
 
 
-//            JamaItem fromItem = jamaInstance.getItem(2281073);
+            JamaItem fromItem = jamaInstance.getItem(itemid);
+            printAll(fromItem,0);
 
 //            JamaItem toDelete = jamaInstance.getItem(2281076);
 //            toDelete.edit().delete();  // OR
@@ -56,11 +83,11 @@ public class Main {
 
 
 
-            JamaRelationship relationship = jamaInstance.getRelationship(294902);
+            // JamaRelationship relationship = jamaInstance.getRelationship(294902);
             // JamaItem fromItem = relationship.getFromItem();
             // JamaItem toItem = relationship.getToItem();
             // JamaRelationshipType relationshipType = relationship.getRelationshipType();
-            System.out.println("relationsghip:" + relationship.toString() );
+            // System.out.println("relationsghip:" + relationship.toString() );
 
 
 
@@ -80,7 +107,7 @@ public class Main {
 //            create.associate(jamaInstance);
 //            JamaRelationship newlycreated = create.edit().setFromItem(fromItem).setToItem(toItem).setRelationshipType(relationshipType).commit();
 //            System.out.println(newlycreated.toString());
-            System.out.println("done");
+            // System.out.println("done");
 //
 
 

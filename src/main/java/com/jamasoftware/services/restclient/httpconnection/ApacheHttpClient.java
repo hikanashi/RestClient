@@ -118,7 +118,7 @@ public class ApacheHttpClient implements HttpClient {
     }
 
     public Response get(String url, String username, String password, String apiKey) throws RestClientException {
-//        System.out.println("GET: " + url);
+        System.out.println("GET: " + url);
         HttpGet getRequest = new HttpGet(url);
         if(apiKey != null)
             getRequest.setHeader("api-key", apiKey);
@@ -127,6 +127,8 @@ public class ApacheHttpClient implements HttpClient {
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(), response.getResponse() + "\nURL: " + url);
         }
+        System.out.println("Response Status :"+ String.valueOf(response.getStatusCode()));
+        System.out.println(response.getResponse());
         return response;
     }
 
