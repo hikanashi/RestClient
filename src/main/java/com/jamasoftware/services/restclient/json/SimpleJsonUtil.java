@@ -148,4 +148,11 @@ class SimpleJsonUtil {
             object.put(key, value);
         }
     }
+
+    @SuppressWarnings("unchecked")
+    void addIfNotNull(JSONArray array, Object value) {
+        if(value != null) {
+            array.add(value);
+        }
+    }
 }
