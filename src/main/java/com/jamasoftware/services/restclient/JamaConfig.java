@@ -19,11 +19,13 @@ public class JamaConfig {
     private Integer resourceTimeOut;    //value is seconds
     private String openUrlBase;
     private String apiKey = null;
+    private String clientCertFilePath;
+    private String clientCertPassword;
 
     public JamaConfig() {
         json = new SimpleJsonHandler();
         try {
-            httpClient = new ApacheHttpClient();
+            httpClient = new ApacheHttpClient("","");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -46,6 +48,9 @@ public class JamaConfig {
             setOpenUrlBase(properties.getProperty("baseUrl"));
             apiKey = properties.getProperty("apiKey");
             resourceTimeOut = Integer.valueOf(timeOutString);
+            clientCertFilePath = properties.getProperty("clientCertFilePath");
+            clientCertPassword = properties.getProperty("clientCertPassword");
+            httpClient = new ApacheHttpClient(clientCertFilePath,clientCertPassword);
         } catch(Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -70,6 +75,9 @@ public class JamaConfig {
             apiKey = properties.getProperty("apiKey");
             String timeOutString = properties.getProperty("resourceTimeOut");
             resourceTimeOut = Integer.valueOf(timeOutString);
+            clientCertFilePath = properties.getProperty("clientCertFilePath");
+            clientCertPassword = properties.getProperty("clientCertPassword");
+            httpClient = new ApacheHttpClient(clientCertFilePath,clientCertPassword);
         } catch(Exception e) {
             e.printStackTrace();
             System.exit(1);
