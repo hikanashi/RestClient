@@ -9,7 +9,12 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class JamaConfig {
+    private final Logger logger = LogManager.getLogger(JamaConfig.class);
+
     private String baseUrl;
     // TODO add ending forward slash off of domain name
     private String username;
@@ -24,18 +29,26 @@ public class JamaConfig {
 
     public JamaConfig() {
         json = new SimpleJsonHandler();
-        try {
-            httpClient = new ApacheHttpClient("","");
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public JamaConfig(boolean loadFromPropertiesFile, String filename) {
         this();
+        loadProperties(loadFromPropertiesFile, filename);
+        initializeHttpClient();
+    }
+
+
+    public JamaConfig(boolean loadFromPropertiesFile) {
+        this();
+        loadProperties(loadFromPropertiesFile, "jama.properties");
+        initializeHttpClient();
+    }
+
+    private void loadProperties(boolean loadFromPropertiesFile, String filename) {
         if(!loadFromPropertiesFile) {
             return;
         }
+
         InputStream input = null;
         try {
             Properties properties = new Properties();
@@ -50,37 +63,16 @@ public class JamaConfig {
             resourceTimeOut = Integer.valueOf(timeOutString);
             clientCertFilePath = properties.getProperty("clientCertFilePath");
             clientCertPassword = properties.getProperty("clientCertPassword");
-            httpClient = new ApacheHttpClient(clientCertFilePath,clientCertPassword);
         } catch(Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            logger.error("can't load properties:"+ filename, e);
         }
     }
 
-
-    public JamaConfig(boolean loadFromPropertiesFile) {
-        this();
-        if(!loadFromPropertiesFile) {
-            return;
-        }
-        InputStream input = null;
+    private void initializeHttpClient() {
         try {
-            Properties properties = new Properties();
-            input = new FileInputStream("jama.properties");
-            properties.load(input);
-            setBaseUrl(properties.getProperty("baseUrl"));
-            username = properties.getProperty("username");
-            password = properties.getProperty("password");
-            setOpenUrlBase(properties.getProperty("baseUrl"));
-            apiKey = properties.getProperty("apiKey");
-            String timeOutString = properties.getProperty("resourceTimeOut");
-            resourceTimeOut = Integer.valueOf(timeOutString);
-            clientCertFilePath = properties.getProperty("clientCertFilePath");
-            clientCertPassword = properties.getProperty("clientCertPassword");
             httpClient = new ApacheHttpClient(clientCertFilePath,clientCertPassword);
         } catch(Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            logger.error("can't initialize HttpClient",e);
         }
     }
 
