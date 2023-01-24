@@ -12,7 +12,11 @@ import com.jamasoftware.services.restclient.json.JsonHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class JamaClient {
+    private final Logger logger = LogManager.getLogger(JamaClient.class);
     private HttpClient httpClient;
     private JsonHandler json;
     private String username;
@@ -40,6 +44,7 @@ public class JamaClient {
     }
 
     public JamaDomainObject getResource(String resource, JamaInstance jamaInstance) throws RestClientException {
+        logger.debug("GET(resource):"+ resource);
         Response response = httpClient.get(baseUrl + resource, username, password, apiKey);
         return json.deserialize(response.getResponse(), jamaInstance);
     }
@@ -54,6 +59,7 @@ public class JamaClient {
 
 
     public JamaPage getPage(String url, String startAt, JamaInstance jamaInstance) throws RestClientException {
+        logger.debug("GET(page):"+ url + startAt);
         Response response = httpClient.get(url + startAt, username, password, apiKey);
         JamaPage page = json.getPage(response.getResponse(), jamaInstance);
         page.setJamaClient(this);
@@ -78,10 +84,13 @@ public class JamaClient {
     }
 
     public void putRaw(String url, String payload) throws RestClientException {
+        logger.trace("PUT:"+ url);
+        logger.trace("PAYLOAD:"+ payload);
         httpClient.put(url, username, password, apiKey, payload);
     }
 
     public void deleteRaw(String url) throws RestClientException {
+        logger.trace("DELETE:"+ url);
         httpClient.delete(url, username, password, apiKey);
     }
 
@@ -90,12 +99,12 @@ public class JamaClient {
     }
 
     public void put(String resource, LazyResource payload) throws RestClientException {
-//        System.out.println(json.serialize(payload));
         putRaw(baseUrl + resource, json.serializeEdited(payload));
     }
     public Response postRaw(String url, String payload) throws RestClientException {
+        logger.trace("POST:"+ url);
+        logger.trace("PAYLOAD:"+ payload);
         return httpClient.post(url, username, password, apiKey, payload);
-//        System.out.println(response.getResponse());
     }
 
     public Integer post(String resource, LazyResource payload) throws RestClientException {
@@ -105,7 +114,7 @@ public class JamaClient {
 
     public byte[] getItemTypeImage(String url) throws RestClientException{
         String domain = url.substring(0, url.indexOf("/img/"));
-        if(!baseUrl.contains(domain)){
+        if(!baseUrl.contains(domain)) {
             throw new RestClientException("Not a valid Item Type image URL: \"" + url + "\"");
         }
         FileResponse response = httpClient.getFile(url, username, password, apiKey);

@@ -40,7 +40,7 @@ public class JamaProjectTest extends TestCase {
         assertFalse(jamaProject.isFolder());
         assertTrue(JamaUser.class.isInstance(jamaProject.getCreatedBy()));
         List<JamaItem> children = jamaProject.getChildren();
-        System.out.println("done");
+        logger.info("done");
 
 //        assertFalse(jamaProject.isLocked());
 //        assertEquals(createdDate, jamaProject.lastLockedDate());

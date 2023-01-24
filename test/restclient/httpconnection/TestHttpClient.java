@@ -12,6 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class TestHttpClient implements HttpClient {
+    private static final Logger logger = LogManager.getLogger(TestHttpClient.class);
+
     private JSONObject responses;
     private JSONObject payloads;
     public TestHttpClient() {
@@ -31,7 +33,7 @@ public class TestHttpClient implements HttpClient {
         String response = ((JSONObject)responseObject.get("response")).toJSONString();
         Integer statusCode = (int)(long)responseObject.get("statusCode");
 
-        System.out.println(key);
+        logger.info(key);
         return new Response(statusCode, response);
     }
 

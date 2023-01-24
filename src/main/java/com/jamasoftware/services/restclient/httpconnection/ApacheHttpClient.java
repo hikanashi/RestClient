@@ -24,6 +24,8 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
@@ -36,15 +38,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ApacheHttpClient implements HttpClient {
-    private final Logger log = Logger.getLogger(ApacheHttpClient.class.getName());
-    PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+    private final Logger logger = LogManager.getLogger(ApacheHttpClient.class);
+    private PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     private org.apache.http.client.HttpClient client;
 
-    protected boolean trustallsite = false;
+    protected boolean trustallsite = true;
     protected boolean selectclientcert = false;
 
 
@@ -54,6 +54,8 @@ public class ApacheHttpClient implements HttpClient {
             SSLContext sslContext = createSSLContext(keyStorePath,KeyStorepassowrd);
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                     sslContext,
+                    new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"},
+                    null,
                     NoopHostnameVerifier.INSTANCE);
             SocketConfig socketConfig = SocketConfig.custom()
                     .setSoTimeout(20000)
@@ -77,8 +79,6 @@ public class ApacheHttpClient implements HttpClient {
             String keyStorePath, String keyStorePassword)
             throws IOException, GeneralSecurityException {
 
-        String keyStoreType = "PKCS12";
-        char[] keyStorePasswordArray = keyStorePassword.toCharArray();
         TrustStrategy trustStrategy = null;
         PrivateKeyStrategy privatekeyStrategy = null;
 
@@ -104,7 +104,9 @@ public class ApacheHttpClient implements HttpClient {
         SSLContextBuilder sslContextBuilder = SSLContexts.custom();
 
         KeyStore keystore = null;
-        if(keyStorePath.length() > 1) {
+        if(keyStorePath != null && keyStorePath.length() > 0) {
+            String keyStoreType = "PKCS12";
+            char[] keyStorePasswordArray = keyStorePassword.toCharArray();
             keystore = loadKeyStore(keyStorePath, keyStoreType, keyStorePasswordArray);
             if(privatekeyStrategy != null ) {
                 sslContextBuilder.loadKeyMaterial(keystore, keyStorePasswordArray, privatekeyStrategy); 
@@ -146,7 +148,7 @@ public class ApacheHttpClient implements HttpClient {
         try {
             return new BasicScheme().authenticate(credentials, request, null);
         } catch (AuthenticationException e) {
-            log.log(Level.SEVERE, e.toString(), e);
+            logger.fatal(e.toString(), e);
             throw new RestClientException("Unable to create authentication header");
         }
     }
@@ -177,32 +179,40 @@ public class ApacheHttpClient implements HttpClient {
                 EntityUtils.consume(responseEntity);
             } catch (IOException e) {
                 // Not throwing here because it's clean up
-                log.log(Level.SEVERE, e.toString(), e);
+                logger.fatal(e.toString(), e);
             }
         }
     }
 
     public Response get(String url, String username, String password, String apiKey) throws RestClientException {
-        System.out.println("GET: " + url);
+        logger.debug("GET REQ:" + url);
         HttpGet getRequest = new HttpGet(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             getRequest.setHeader("api-key", apiKey);
+        }
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         Response response = execute(getRequest, credentials);
+        
+        logger.debug("GET RES:" + String.valueOf(response.getStatusCode()));
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(), response.getResponse() + "\nURL: " + url);
         }
-        System.out.println("Response Status :" + String.valueOf(response.getStatusCode()));
-        System.out.println(response.getResponse());
+
+        logger.debug(response.getResponse());
         return response;
     }
 
     public Response delete(String url, String username, String password, String apiKey) throws RestClientException {
+        logger.debug("DELETE REQ:" + url);
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         HttpDelete deleteRequest = new HttpDelete(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             deleteRequest.setHeader("api-key", apiKey);
+        }
+
         Response response = execute(deleteRequest, credentials);
+        logger.debug("DELETE RES:" + String.valueOf(response.getStatusCode()));
+
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(), response.getResponse() + "\nURL: " + url);
         }
@@ -211,14 +221,21 @@ public class ApacheHttpClient implements HttpClient {
 
     public Response post(String url, String username, String password, String apiKey, String payload)
             throws RestClientException {
+        logger.debug("POST REQ:" + url);
+        logger.debug("POST BODY:" + payload);
+
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         HttpPost postRequest = new HttpPost(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             postRequest.setHeader("api-key", apiKey);
+        }
         StringEntity body = new StringEntity(payload, "UTF-8");
         body.setContentType("application/json");
         postRequest.setEntity(body);
+
         Response response = execute(postRequest, credentials);
+        logger.debug("POST RES:" + String.valueOf(response.getStatusCode()));
+        
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(),
                     response.getResponse() + "\nURL: " + url + "\nPayload: " + payload);
@@ -228,15 +245,21 @@ public class ApacheHttpClient implements HttpClient {
 
     public Response put(String url, String username, String password, String apiKey, String payload)
             throws RestClientException {
-        System.out.println("PUT: " + url);
+        logger.debug("PUT REQ:" + url);
+        logger.debug("PUT BODY:" + payload);
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         HttpPut putRequest = new HttpPut(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             putRequest.setHeader("api-key", apiKey);
+        }
+
         StringEntity body = new StringEntity(payload, "UTF-8");
         body.setContentType("application/json");
         putRequest.setEntity(body);
+
         Response response = execute(putRequest, credentials);
+        logger.debug("PUT RES:" + String.valueOf(response.getStatusCode()));
+
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(),
                     response.getResponse() + "\nURL: " + url + "\nPayload: " + payload);
@@ -246,16 +269,21 @@ public class ApacheHttpClient implements HttpClient {
 
     public Response putFile(String url, String username, String password, String apiKey, File file)
             throws RestClientException {
+        logger.debug("PUT REQ:" + url);
+        logger.debug("PUT FILE:" + file.getPath());
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         HttpPut putRequest = new HttpPut(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             putRequest.setHeader("api-key", apiKey);
+        }
+        
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         multipartEntityBuilder.addBinaryBody("file", file);
         multipartEntityBuilder.setContentType(ContentType.MULTIPART_FORM_DATA);
         HttpEntity fileEntity = multipartEntityBuilder.build();
         putRequest.setEntity(fileEntity);
         Response response = execute(putRequest, credentials);
+        logger.debug("PUT RES:" + String.valueOf(response.getStatusCode()));
         if (response.getStatusCode() >= 400) {
             throw new JamaApiException(response.getStatusCode(),
                     response.getResponse() + "\nURL: " + url + ", Filename: " + file.getName());
@@ -265,14 +293,18 @@ public class ApacheHttpClient implements HttpClient {
 
     public FileResponse getFile(String url, String username, String password, String apiKey)
             throws RestClientException {
+        logger.debug("GET(File) REQ:" + url);
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         HttpEntity responseEntity = null;
         HttpGet request = new HttpGet(url);
-        if (apiKey != null)
+        if (apiKey != null) {
             request.setHeader("api-key", apiKey);
+        }
+
         try {
             request.addHeader(getAuthenticationHeader(credentials, request));
             HttpResponse rawResponse = client.execute(request);
+            logger.debug("GET(File) RES:" + String.valueOf(rawResponse.getStatusLine().getStatusCode()));
             responseEntity = rawResponse.getEntity();
             return new FileResponse(rawResponse.getStatusLine().getStatusCode(),
                     rawResponse.getEntity().getContent());
@@ -283,7 +315,7 @@ public class ApacheHttpClient implements HttpClient {
                 EntityUtils.consume(responseEntity);
             } catch (IOException e) {
                 // Not throwing here because it's clean up
-                log.log(Level.SEVERE, e.toString(), e);
+                logger.fatal(e.toString(), e);
             }
         }
     }

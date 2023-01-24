@@ -6,7 +6,12 @@ import com.jamasoftware.services.restclient.jamadomain.lazyresources.*;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
+
     public static void printAll(JamaParent jamaParent, int indent) throws RestClientException {
         String indentString = "";
         for(int i = 0; i < indent; ++i) {
@@ -14,10 +19,10 @@ public class Main {
         }
         if(jamaParent.isProject()) {
             JamaProject project = (JamaProject)jamaParent;
-            System.out.println(indentString + project.getName() + " - " + project.getId());
+            logger.info(indentString + project.getName() + " - " + project.getId());
         } else {
             JamaItem item = (JamaItem)jamaParent;
-            System.out.println(indentString + item.getName() + " - " + item.getSequence());
+            logger.info(indentString + item.getName() + " - " + item.getSequence());
         }
         for(JamaItem child : jamaParent.getChildren()) {
             printAll(child, indent + 1);
@@ -47,12 +52,12 @@ public class Main {
 
 
             if(itemid == 0) {
-                System.out.println("option -item:itemid is must");
+                logger.info("option -item:itemid is must");
                 return;
             }
 
             if(propfilepath == null) {
-                System.out.println("option -property:filepath is must");
+                logger.info("option -property:filepath is must");
                 return;
             }
 
@@ -87,7 +92,7 @@ public class Main {
             // JamaItem fromItem = relationship.getFromItem();
             // JamaItem toItem = relationship.getToItem();
             // JamaRelationshipType relationshipType = relationship.getRelationshipType();
-            // System.out.println("relationsghip:" + relationship.toString() );
+            // logger.info("relationsghip:" + relationship.toString() );
 
 
 
@@ -95,7 +100,7 @@ public class Main {
 //            JamaRelationshipType relationshipType = jamaInstance.getRelationshipTypes().get(0);
 //            JamaRelationship newRelationship = fromItem.getDownstreamRelationships().get(0);
 //            JamaRelationship updatedRelationship = newRelationship.edit().setFromItem(fromItem).setToItem(toItem).setRelationshipType(relationshipType).commit();
-//            System.out.println(updatedRelationship);
+//            logger.info(updatedRelationship);
 
 
 
@@ -106,8 +111,8 @@ public class Main {
 //            JamaRelationship create = new JamaRelationship();
 //            create.associate(jamaInstance);
 //            JamaRelationship newlycreated = create.edit().setFromItem(fromItem).setToItem(toItem).setRelationshipType(relationshipType).commit();
-//            System.out.println(newlycreated.toString());
-            // System.out.println("done");
+//            logger.info(newlycreated.toString());
+            // logger.info("done");
 //
 
 
@@ -125,61 +130,61 @@ public class Main {
 
             //            itemA.edit().setFieldValue("description", unicodeString).commit();
 //            JamaFieldValue fieldValue = itemA.getFieldValueByName("description");
-//            System.out.println(fieldValue.getValue());
+//            logger.info(fieldValue.getValue());
 //            assertTrue(unicodeString.equals(fieldValue.getValue().toString()));
 
 //            JamaItemType itemType = jamaInstance.getItemType(89009);
 //            ArrayList<JamaField> fields = (ArrayList<JamaField>) itemType.getFields();
 //            for(JamaField field : fields) {
 //                if(field.type.equals("DATE")) {
-//                    System.out.println(field.getValue().getName());
+//                    logger.info(field.getValue().getName());
 //                }
 //            }
 //            String description = jamaItem.getFieldValueByName("description").getValue().toString();
 //            updated = updated.edit().setFieldValue("description", description).commit();
-//            System.out.println(updated.getFieldValueByName("description"));
-//            System.out.println("done");
+//            logger.info(updated.getFieldValueByName("description"));
+//            logger.info("done");
 
-//            System.out.println("Jama item is " + jamaItem.isLocked() + " lock status");
-//            System.out.println("Jama item is locked by : " + jamaItem.lockedBy().getUsername());
-//            System.out.println("Jama item is " + jamaItem.isLockedByCurrentUser() + " locked by current user");
-//            System.out.println("Now unlocking item");
+//            logger.info("Jama item is " + jamaItem.isLocked() + " lock status");
+//            logger.info("Jama item is locked by : " + jamaItem.lockedBy().getUsername());
+//            logger.info("Jama item is " + jamaItem.isLockedByCurrentUser() + " locked by current user");
+//            logger.info("Now unlocking item");
 //
 ////            for org admin users with override capabilities:
 ////            jamaItem.unlock();
 ////            jamaItem.lock();     //optional to acquire lock on the item
 //
 ////            for non org admin users, they will need to verify unlocking/acquiring lock before proceeding:
-//            System.out.println(jamaItem.releaseLock());     //will return false if item could not be unlocked, true otherwise
-//            System.out.println(jamaItem.acquireLock());     //will return true if item was locked, false otherwise
+//            logger.info(jamaItem.releaseLock());     //will return false if item could not be unlocked, true otherwise
+//            logger.info(jamaItem.acquireLock());     //will return true if item was locked, false otherwise
 //
-//            System.out.println("Status to release lock : " + jamaItem.releaseLock());
-//            System.out.println("I have gotten the lock with status : " + jamaItem.acquireLock());
-//            System.out.println("Jama item is " + jamaItem.isLocked() + " lock status");
-//            System.out.println("Jama item is " + jamaItem.isLockedByCurrentUser() + " locked by current user");
+//            logger.info("Status to release lock : " + jamaItem.releaseLock());
+//            logger.info("I have gotten the lock with status : " + jamaItem.acquireLock());
+//            logger.info("Jama item is " + jamaItem.isLocked() + " lock status");
+//            logger.info("Jama item is " + jamaItem.isLockedByCurrentUser() + " locked by current user");
 
 
 //            JamaItem newParentFolder = jamaInstance.getItem(1972340);
 //            JamaParent jamaParent = jamaItem.getParent();
-//            System.out.println("Jama item: " + jamaItem.toString() + " has parent: " + jamaParent.toString());
+//            logger.info("Jama item: " + jamaItem.toString() + " has parent: " + jamaParent.toString());
 //
-//            System.out.println("And this item's open url is : " + jamaInstance.getOpenUrl(jamaItem));
+//            logger.info("And this item's open url is : " + jamaInstance.getOpenUrl(jamaItem));
 //            JamaProject jamaProject = jamaInstance.getProject(2120041);
 //
-////            System.out.println("New jama parent is: " + newParentFolder.toString());
+////            logger.info("New jama parent is: " + newParentFolder.toString());
 
 
-//            System.out.println(jamaItem.getName());
-//            System.out.println("Added child to new parent");
-//            System.out.println("NOW:: Jama item: " + jamaItem.toString() + " has parent: " + jamaItem.getParent().toString());
+//            logger.info(jamaItem.getName());
+//            logger.info("Added child to new parent");
+//            logger.info("NOW:: Jama item: " + jamaItem.toString() + " has parent: " + jamaItem.getParent().toString());
 
 //            jamaItem.associate(1972342, jamaInstance);
-//            System.out.println(jamaItem);
+//            logger.info(jamaItem);
 //            JamaProject jamaProject = new JamaProject();
 //            jamaProject.associate(20183, jamaInstance);
 //            JamaItemType jamaItemType = new JamaItemType();
 //            jamaItemType.associate(89029, jamaInstance);
-//          //  System.out.println(jamaItemType.getDisplay());
+//          //  logger.info(jamaItemType.getDisplay());
 //            jamaItemType.getImage();
 
 //            JamaProject jamaProject = jamaInstance.getProject(20183);
@@ -188,14 +193,14 @@ public class Main {
 //            JamaItem jamaItem = jamaInstance.getItem(2119354);
 //            jamaItem.getFieldValues();
 //            JamaFieldValue fieldValue = jamaItem.getFieldValueByName("description");
-//            System.out.println(fieldValue.toString());
+//            logger.info(fieldValue.toString());
 //            jamaInstance.createItem("name", JamaParent, JamaIteType)
 //            List<JamaRelationshipType> relationshipTypes = jamaInstance.getRelationshipTypes();
 
 //            JamaProject jamaProject = jamaInstance.getProject(20183);
 //            List<JamaItem> children = jamaProject.getChildren();
 //            for(JamaItem j : children) {
-//                System.out.println(j.toString());
+//                logger.info(j.toString());
 //            }
 
 //            jamaInstance.createRelationship(relationshipId, fromItem, toItem);
@@ -204,7 +209,7 @@ public class Main {
 //                    .setFieldValue("status", "approved")
 //                    .commit();
 //            for(JamaFieldValue value : jamaItem.getFieldValues()) {
-//                System.out.println(value);
+//                logger.info(value);
 //            }
 
 //
@@ -238,9 +243,9 @@ public class Main {
 
 
 //
-//            System.out.println(component.getDocumentKey());
-//            System.out.println(set.getDocumentKey());
-//            System.out.println(item.getDocumentKey());
+//            logger.info(component.getDocumentKey());
+//            logger.info(set.getDocumentKey());
+//            logger.info(item.getDocumentKey());
 //
 //            jamaItem.edit()
 //                    .setName("NEW NAME ALERT")
@@ -257,13 +262,13 @@ public class Main {
 
 //            jamaItem.associate(2119331, jamaInstance);
 
-//            System.out.println("Item is: " + jamaItem);
-//            System.out.println("Parent is: " + jamaItem.getParent());
-//            System.out.println("blah");
+//            logger.info("Item is: " + jamaItem);
+//            logger.info("Parent is: " + jamaItem.getParent());
+//            logger.info("blah");
 //            List<JamaItem> children = jamaItem.getChildren();
-//            System.out.println("CHildren are : ");
+//            logger.info("CHildren are : ");
 //            for(JamaItem item: children){
-//                System.out.println(item);
+//                logger.info(item);
 //            }
 //            printAll(jamaItem, 0);
 //            printAll(jamaItem, 0);
@@ -274,42 +279,42 @@ public class Main {
 //            fos.write(imageData);
 //            fos.close();
 
-//            System.out.println(item.isLocked());
-//            System.out.println(item.lockedBy());
+//            logger.info(item.isLocked());
+//            logger.info(item.lockedBy());
 //            item.lock();
-//            System.out.println(item.isLocked());
-////            System.out.println(item.lockedBy());
+//            logger.info(item.isLocked());
+////            logger.info(item.lockedBy());
 //            List<JamaProject> hostedProjects = jamaInstance.getProjects();
 //            JamaProject aProject = hostedProjects.get(0);
 //            List<JamaItem> items = aProject.getItems();
 //            for(JamaItem item : items){
-//                System.out.println(item);
+//                logger.info(item);
 //            }
 //            for(JamaItem item : items) {
 //                if(item.getName().toString().contains("dont care")) {
 //                    item.forceLockItem();
 //                    if(item.isLockedByCurrentUser())
-//                        System.out.println("DONZO");
+//                        logger.info("DONZO");
 ////                    JamaItem upItem = item.getUpstreamItems().get(0);
-//                    System.out.println(upItem);
-//                    System.out.println("-----");
-//                    System.out.println(upItem.getDownstreamItems().get(0));
-//                    System.out.println("Hellow");
+//                    logger.info(upItem);
+//                    logger.info("-----");
+//                    logger.info(upItem.getDownstreamItems().get(0));
+//                    logger.info("Hellow");
 
 
 
 
 //            List<JamaRelationship> relationships = aProject.getRelationships();
 //            JamaRelationship relationship = relationships.get(0);
-//            System.out.println(relationship.getFromItem());
-//            System.out.println(relationship.getToItem());
-//            System.out.println(relationship.getRelationshipType());
+//            logger.info(relationship.getFromItem());
+//            logger.info(relationship.getToItem());
+//            logger.info(relationship.getRelationshipType());
 
 //            JamaProject jamaProject = new JamaProject();
 //            jamaProject.associate(20540, jamaInstance);
 //            List<JamaItemType> types = jamaInstance.getItemTypes();
 //            JamaItem jamaItem = jamaInstance.getItem(2169992);
-//            System.out.println(jamaItem.getName());
+//            logger.info(jamaItem.getName());
 //            jamaInstance.ping();
 //            JamaProject jamaProject = null;
 //            List<JamaProject> hostedProjects = jamaInstance.getProjects();
@@ -323,14 +328,14 @@ public class Main {
 //            List<JamaItem> items = jamaProject.getItems();
 //
 //            for (JamaItem item : items) {
-//                System.out.println(item.getName());
+//                logger.info(item.getName());
 //            }
 //
 //            List<JamaRelationship> relationships = items.get(1).getDownstreamRelationships();
             //JamaItem item = jamaInstance.getItem(1972370);
 //            item.getName();
 
-            System.out.println("done");
+            logger.info("done");
 
         } catch(Exception e) {
             e.printStackTrace();

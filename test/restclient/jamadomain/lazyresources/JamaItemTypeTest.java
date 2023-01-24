@@ -41,7 +41,7 @@ public class JamaItemTypeTest extends TestCase {
         } catch (Exception e) {
             throw new RestClientException(e);
         }
-        System.out.println("Done");
+        logger.info("Done");
     }
 
     public void refresh(JamaItemType jamaItemType) throws Exception {
