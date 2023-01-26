@@ -42,8 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class ApacheHttpClient implements HttpClient {
     private final Logger logger = LogManager.getLogger(ApacheHttpClient.class);
     private PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-    private org.apache.http.client.HttpClient client;
-
+    protected org.apache.http.client.HttpClient client;
     protected boolean trustallsite = true;
     protected boolean selectclientcert = false;
 
