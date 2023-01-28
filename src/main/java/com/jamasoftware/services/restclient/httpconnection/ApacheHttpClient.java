@@ -183,6 +183,7 @@ public class ApacheHttpClient implements HttpClient {
         }
     }
 
+    @Override
     public Response get(String url, String username, String password, String apiKey) throws RestClientException {
         logger.debug("GET REQ:" + url);
         HttpGet getRequest = new HttpGet(url);
@@ -201,6 +202,7 @@ public class ApacheHttpClient implements HttpClient {
         return response;
     }
 
+    @Override
     public Response delete(String url, String username, String password, String apiKey) throws RestClientException {
         logger.debug("DELETE REQ:" + url);
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
@@ -218,6 +220,7 @@ public class ApacheHttpClient implements HttpClient {
         return response;
     }
 
+    @Override
     public Response post(String url, String username, String password, String apiKey, String payload)
             throws RestClientException {
         logger.debug("POST REQ:" + url);
@@ -242,6 +245,7 @@ public class ApacheHttpClient implements HttpClient {
         return response;
     }
 
+    @Override
     public Response put(String url, String username, String password, String apiKey, String payload)
             throws RestClientException {
         logger.debug("PUT REQ:" + url);
@@ -266,6 +270,7 @@ public class ApacheHttpClient implements HttpClient {
         return response;
     }
 
+    @Override
     public Response putFile(String url, String username, String password, String apiKey, File file)
             throws RestClientException {
         logger.debug("PUT REQ:" + url);
@@ -290,6 +295,7 @@ public class ApacheHttpClient implements HttpClient {
         return response;
     }
 
+    @Override
     public FileResponse getFile(String url, String username, String password, String apiKey)
             throws RestClientException {
         logger.debug("GET(File) REQ:" + url);
