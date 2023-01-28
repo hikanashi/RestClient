@@ -1,5 +1,8 @@
 package com.jamasoftware.services.restclient.jamadomain.lazyresources;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.jamasoftware.services.restclient.exception.RestClientException;
 import com.jamasoftware.services.restclient.exception.UnexpectedJamaResponseException;
 import com.jamasoftware.services.restclient.jamadomain.core.JamaDomainObject;
@@ -7,6 +10,8 @@ import com.jamasoftware.services.restclient.jamadomain.core.JamaInstance;
 import com.jamasoftware.services.restclient.jamadomain.stagingresources.StagingResource;
 
 public abstract class LazyBase {
+    private static final Logger logger = LogManager.getLogger(LazyBase.class);
+
     protected JamaInstance jamaInstance;
     protected boolean shouldFetch = true;
     protected Long lastFetch = null;
@@ -20,7 +25,7 @@ public abstract class LazyBase {
                 forceFetch();
             }
         } catch (RestClientException e) {
-            e.printStackTrace();
+            logger.error(e);;
         }
     }
 

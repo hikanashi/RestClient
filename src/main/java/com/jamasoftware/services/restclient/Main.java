@@ -340,7 +340,7 @@ public class Main {
             logger.info("done");
 
         } catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e);;
         }
     }
 }
