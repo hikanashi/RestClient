@@ -6,7 +6,13 @@ import com.jamasoftware.services.restclient.json.JsonHandler;
 import com.jamasoftware.services.restclient.json.SimpleJsonHandler;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,48 +37,97 @@ public class JamaConfig {
         json = new SimpleJsonHandler();
     }
 
-    public JamaConfig(boolean loadFromPropertiesFile, String filename) {
+    public JamaConfig(boolean loadFromPropertiesFile, String filename) throws Exception {
         this();
         loadProperties(loadFromPropertiesFile, filename);
-        initializeHttpClient();
     }
 
 
-    public JamaConfig(boolean loadFromPropertiesFile) {
+    public JamaConfig(boolean loadFromPropertiesFile) throws Exception {
         this();
         loadProperties(loadFromPropertiesFile, "jama.properties");
-        initializeHttpClient();
     }
 
-    private void loadProperties(boolean loadFromPropertiesFile, String filename) {
+    private void loadProperties(boolean loadFromPropertiesFile, String filename) throws Exception {
         if(!loadFromPropertiesFile) {
             return;
         }
 
         InputStream input = null;
+
+        Properties properties = new Properties();
+        input = new FileInputStream(filename);
+        properties.load(input);
+        setBaseUrl(properties.getProperty("baseUrl"));
+        username = properties.getProperty("username");
+        password = properties.getProperty("password");
+        String timeOutString = properties.getProperty("resourceTimeOut");
+        setOpenUrlBase(properties.getProperty("baseUrl"));
+        apiKey = properties.getProperty("apiKey");
+        resourceTimeOut = Integer.valueOf(timeOutString);
+        clientCertFilePath = properties.getProperty("clientCertFilePath");
+        clientCertPassword = properties.getProperty("clientCertPassword");
+    }
+
+    public void saveProperties(String filename) throws Exception {
+        OutputStream ouput = null;
         try {
             Properties properties = new Properties();
-            input = new FileInputStream(filename);
-            properties.load(input);
-            setBaseUrl(properties.getProperty("baseUrl"));
-            username = properties.getProperty("username");
-            password = properties.getProperty("password");
-            String timeOutString = properties.getProperty("resourceTimeOut");
-            setOpenUrlBase(properties.getProperty("baseUrl"));
-            apiKey = properties.getProperty("apiKey");
-            resourceTimeOut = Integer.valueOf(timeOutString);
-            clientCertFilePath = properties.getProperty("clientCertFilePath");
-            clientCertPassword = properties.getProperty("clientCertPassword");
+
+            setValidProperty(properties, "baseUrl", baseUrl);
+            setValidProperty(properties, "username", username);
+            setValidProperty(properties,"password", password);
+
+            if(resourceTimeOut == null) {
+                throw new NullPointerException("Resource Timeout is not set");
+            }
+            setValidProperty(properties,"resourceTimeOut", resourceTimeOut.toString());
+            setValidProperty(properties,"apiKey", apiKey);
+            
+            if(clientCertFilePath != null && clientCertFilePath.length() > 0) {
+                Path pathobj = Paths.get(clientCertFilePath);
+                if (Files.exists(pathobj) != true) {
+                    logger.error("client cert file is not exist:"+ clientCertFilePath);
+                    throw new IOException("client cert file is not exist:"+ clientCertFilePath);
+                }
+
+                setValidProperty(properties,"clientCertFilePath", clientCertFilePath);
+                setValidProperty(properties,"clientCertPassword", clientCertPassword);
+            } else {
+                if(clientCertPassword != null && clientCertPassword.length() > 0) {
+                    throw new IllegalArgumentException("Enter the path to the client certificate.");
+                }
+            }
+
+            // for (String name : properties.stringPropertyNames()) {
+            //     logger.debug("property name:" + name + " value:" + properties.getProperty(name, ""));
+            // }
+            ouput = new FileOutputStream(filename);
+            properties.store(ouput,filename);
         } catch(Exception e) {
-            logger.error("can't load properties:"+ filename, e);
+            throw e;
         }
     }
 
-    private void initializeHttpClient() {
+    private void setValidProperty(Properties properties, String name, String value) throws IllegalArgumentException, NullPointerException {
+        if( value == null) {
+            throw new NullPointerException("properties is null. name:"+ name);
+        }
+
+        if( value.length() <= 0) {
+            throw new IllegalArgumentException("properties is illegal. name:"+ name);
+        }
+
+        logger.debug("setValidProperty name:"+ name + " value:" + value);
+        properties.setProperty(name, value);
+    }
+
+    private void initializeHttpClient(String clientCertFilePath, String clientCertPassword) {
+
         try {
             httpClient = new ApacheHttpClient(clientCertFilePath,clientCertPassword);
         } catch(Exception e) {
-            logger.error("can't initialize HttpClient",e);
+            logger.error("Can't initialize HttpClient",e);
         }
     }
 
@@ -148,6 +203,10 @@ public class JamaConfig {
     }
 
     public HttpClient getHttpClient() {
+        if(httpClient == null) {
+            initializeHttpClient(clientCertFilePath, clientCertPassword);
+        }
+
         return httpClient;
     }
 
@@ -173,5 +232,21 @@ public class JamaConfig {
 
     public String getApiKey() {
         return this.apiKey;
+    }
+
+    public void setClientCertFilePath(String clientCertFilePath) {
+        this.clientCertFilePath = clientCertFilePath;
+    }
+
+    public String getClientCertFilePath() {
+        return this.clientCertFilePath;
+    }
+
+    public void setClientCertPassword(String clientCertPassword) {
+        this.clientCertPassword = clientCertPassword;
+    }
+
+    public String getClientCertPassword() {
+        return this.clientCertPassword;
     }
 }
