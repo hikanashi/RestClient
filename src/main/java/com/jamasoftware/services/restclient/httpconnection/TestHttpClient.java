@@ -1,5 +1,6 @@
 package com.jamasoftware.services.restclient.httpconnection;
 
+import com.jamasoftware.services.restclient.exception.JamaApiException;
 import com.jamasoftware.services.restclient.exception.RestClientException;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +46,12 @@ public class TestHttpClient implements HttpClient {
     @Override
     public Response get(String url, String username, String password, String apiKey) throws RestClientException {
         String key = "GET " + url;
+        logger.debug("Search response key:" + key);
         JSONObject responseObject = (JSONObject)responses.get(key);
+        if( responseObject == null) {
+            throw new JamaApiException(404, "Not Found "+ key);
+        }
+
         String response = ((JSONObject)responseObject.get("response")).toJSONString();
         Integer statusCode = (int)(long)responseObject.get("statusCode");
 
@@ -55,13 +61,28 @@ public class TestHttpClient implements HttpClient {
 
     @Override
     public Response delete(String url, String username, String password, String apiKey) throws RestClientException {
-        return null;
+        String key = "DELETE " + url;
+        logger.debug("Search response key:" + key);
+        JSONObject responseObject = (JSONObject)responses.get(key);
+        if( responseObject == null) {
+            throw new JamaApiException(404, "Not Found "+ key);
+        }
+
+        String response = ((JSONObject)responseObject.get("response")).toJSONString();
+        Integer statusCode = (int)(long)responseObject.get("statusCode");
+
+        logger.info(key);
+        return new Response(statusCode, response);
     }
 
     @Override
     public Response post(String url, String username, String password, String apiKey, String payload) throws RestClientException {
         String key = "POST " + url;
+        logger.debug("Search payload key:" + key);
         JSONObject payloadObject = (JSONObject)payloads.get(key);
+        if( payloadObject == null) {
+            throw new JamaApiException(404, "Not Found "+ key);
+        }
 
         String expectedPayload = ((JSONObject)payloadObject.get("payload")).toJSONString();
         String response = ((JSONObject)payloadObject.get("response")).toJSONString();
@@ -82,7 +103,11 @@ public class TestHttpClient implements HttpClient {
     @Override
     public Response put(String url, String username, String password, String apiKey, String payload) throws RestClientException {
         String key = "PUT " + url;
+        logger.debug("Search payload key:" + key);
         JSONObject payloadObject = (JSONObject)payloads.get(key);
+        if( payloadObject == null) {
+            throw new JamaApiException(404, "Not Found "+ key);
+        }
 
         String expectedPayload = ((JSONObject)payloadObject.get("payload")).toJSONString();
         String response = ((JSONObject)payloadObject.get("response")).toJSONString();
@@ -108,11 +133,16 @@ public class TestHttpClient implements HttpClient {
     @Override
     public FileResponse getFile(String url, String username, String password, String apiKey) throws RestClientException {
         String key = "GET " + url;
+        logger.debug("Search response key:" + key);
         JSONObject responseObject = (JSONObject)responses.get(key);
-        String responsepath = ((JSONObject)responseObject.get("filepath")).toJSONString();
-        Integer statusCode = (int)(long)responseObject.get("statusCode");
+        if( responseObject == null) {
+            throw new JamaApiException(404, "Not Found "+ key);
+        }
 
         try {
+            String responsepath = ((JSONObject)responseObject.get("filepath")).toJSONString();
+            Integer statusCode = (int)(long)responseObject.get("statusCode");
+
             InputStream inputStream = new FileInputStream(responsepath);
             return new FileResponse(statusCode, inputStream );
         } catch (IOException e) {
