@@ -41,11 +41,17 @@ public class JamaItem extends LazyResource implements JamaParent{
 
     public JamaParent getParent() {
         fetch();
+        if(location == null) {
+            return null;
+        }
         return location.getParent();
     }
 
     public String getSequence() {
         fetch();
+        if(location == null) {
+            return null;
+        }
         return location.getSequence();
     }
 
@@ -70,6 +76,9 @@ public class JamaItem extends LazyResource implements JamaParent{
 
     @Override
     public void makeChildOf(JamaParent jamaParent) throws RestClientException {
+        if(location == null) {
+            return;
+        }
         this.location.setParent(jamaParent);
     }
 
@@ -185,6 +194,9 @@ public class JamaItem extends LazyResource implements JamaParent{
 
     public boolean isLocked() {
         fetch();
+        if(lockStatus == null) {
+            return false;
+        }
         return lockStatus.isLocked();
     }
 
@@ -195,10 +207,17 @@ public class JamaItem extends LazyResource implements JamaParent{
 
     public Date lastLockedDate(){
         fetch();
+        if(lockStatus == null) {
+            return null;
+        }
         return lockStatus.getLastLocked();
     }
 
     public JamaUser lockedBy() {
+        if(lockStatus == null) {
+            return null;
+        }
+ 
         return lockStatus.getLockedBy();
     }
 
