@@ -82,7 +82,10 @@ public class JamaConfig {
                 throw new NullPointerException("Resource Timeout is not set");
             }
             setValidProperty(properties,"resourceTimeOut", resourceTimeOut.toString());
-            setValidProperty(properties,"apiKey", apiKey);
+
+            if(apiKey != null && apiKey.length() > 0) {
+                setValidProperty(properties,"apiKey", apiKey);
+            }
             
             if(clientCertFilePath != null && clientCertFilePath.length() > 0) {
                 Path pathobj = Paths.get(clientCertFilePath);
