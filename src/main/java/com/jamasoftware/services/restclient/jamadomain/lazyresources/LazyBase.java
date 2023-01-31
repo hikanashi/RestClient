@@ -18,14 +18,18 @@ public abstract class LazyBase {
     private Integer id;
 
     public void fetch() {
-        if(this instanceof StagingResource) return;
+        if(this instanceof StagingResource)  {
+            return;
+        }
+
         checkFetched();
+        
         try {
             if (shouldFetch && id != null) {
                 forceFetch();
             }
         } catch (RestClientException e) {
-            logger.error(e);;
+            logger.info("fetch fail", e);
         }
     }
 
